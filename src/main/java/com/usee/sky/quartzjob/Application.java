@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import com.usee.sky.quartzjob.conf.ApplicationConfiguration;
-import com.usee.sky.quartzjob.job.SendMessageJob;
+import com.usee.sky.quartzjob.job.RunMeJob;
 
 /**
  * @author jet
@@ -30,13 +30,12 @@ import com.usee.sky.quartzjob.job.SendMessageJob;
 @Import(ApplicationConfiguration.class)
 public class Application
 {
-	private static final Log LOG = LogFactory.getLog(Application.class);
 
 	public static void main(String[] args)
 	{
-	   LOG.info(" START APPLICATION ");
        ApplicationContext context = new AnnotationConfigApplicationContext(Application.class);
-       SendMessageJob job = context.getBean(SendMessageJob.class);
-       job.start();
+       RunMeJob job = context.getBean(RunMeJob.class);
+       job.setCronExpression("0/5 * * * * ?");
+       job.startup();
 	}
 }

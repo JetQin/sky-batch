@@ -15,6 +15,8 @@ package com.usee.sky.quartzjob.conf;
 import java.util.Properties;
 
 import org.apache.commons.dbcp.BasicDataSource;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
 import org.quartz.SchedulerException;
 import org.quartz.SchedulerFactory;
 import org.quartz.impl.StdSchedulerFactory;
@@ -24,6 +26,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.scheduling.quartz.JobDetailBean;
+import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.scheduling.support.CronTrigger;
 
@@ -54,24 +58,43 @@ public class ApplicationConfiguration
 		return dataSource;
 	}
 
-	@Bean(name = "scheduleFactory")
-	public StdSchedulerFactory scheduleFactory()
-	{
-		StdSchedulerFactory scheduleFactory = new StdSchedulerFactory();
+//	@Bean(name = "scheduleFactory")
+//	public StdSchedulerFactory scheduleFactory()
+//	{
+//		StdSchedulerFactory scheduleFactory = new StdSchedulerFactory();
 //		scheduleFactory.setDataSource(quartzDataSource());
 //		scheduleFactory.setApplicationContextSchedulerContextKey(APPLICATION_CONTEXT_SCHEDULE_KEY);
 //		scheduleFactory.setQuartzProperties(quartzProperties());
-		try
-		{
-			scheduleFactory.initialize(quartzProperties());
-		}
-		catch (SchedulerException e)
-		{
-			e.printStackTrace();
-		}
+//		try
+//		{
+//			scheduleFactory.initialize(quartzProperties());
+//		}
+//		catch (SchedulerException e)
+//		{
+//			e.printStackTrace();
+//		}
+//		return scheduleFactory;
+//	}
+	
+	
+	@Bean(name = "scheduleFactory")
+	public SchedulerFactoryBean scheduleFactory()
+	{
+		SchedulerFactoryBean scheduleFactory = new SchedulerFactoryBean();
+		scheduleFactory.setDataSource(quartzDataSource());
+		scheduleFactory.setApplicationContextSchedulerContextKey(APPLICATION_CONTEXT_SCHEDULE_KEY);
+		scheduleFactory.setQuartzProperties(quartzProperties());
 		return scheduleFactory;
 	}
-
+	
+//	@Bean
+//	public JobDetailBean jobDetails()
+//	{
+//		JobDetailBean jobDetail = new JobDetailBean();
+////		jobDetail.
+//		return jobDetail;
+//	}
+	
 //	@Bean
 //	public CronTrigger trigger()
 //	{
