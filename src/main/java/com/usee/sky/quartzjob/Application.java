@@ -12,16 +12,11 @@
  ***********************************************************************/
 package com.usee.sky.quartzjob;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.usee.sky.quartzjob.conf.ApplicationConfiguration;
-import com.usee.sky.quartzjob.job.RunMeJob;
+import com.usee.sky.quartzjob.conf.QuartzConfiguration;
+import com.usee.sky.quartzjob.job.SampleJob;
 
 /**
  * @author jet
@@ -37,9 +32,18 @@ public class Application
 
 //		ApplicationContext context = new ClassPathXmlApplicationContext(
 //				"quartz.xml");
-		ApplicationContext context = new AnnotationConfigApplicationContext(ApplicationConfiguration.class);
-		RunMeJob job = context.getBean(RunMeJob.class);
-		job.setCronExpression("0/5 * * * * ?");
-		job.startup();
+//		ApplicationContext context = new AnnotationConfigApplicationContext(ApplicationConfiguration.class);
+//		RunMeJob job = context.getBean(RunMeJob.class);
+//		job.setCronExpression("0/5 * * * * ?");
+//		job.startup();
+		
+		ApplicationContext context = new AnnotationConfigApplicationContext(QuartzConfiguration.class);
+        SampleJob job = context.getBean(SampleJob.class);
+        job.setJobName("SampleJob");
+        job.setJobGroupName("SampleJobGroup");
+        job.setTriggerName("SampleTrigger");
+        job.setTriggerGroupName("SampleTriggerGroup");
+        job.setCronExpression("0/5 * * * * ?");
+        job.start();
 	}
 }
