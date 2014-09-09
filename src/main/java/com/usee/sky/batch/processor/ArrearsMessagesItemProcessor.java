@@ -12,7 +12,8 @@ import com.usee.sky.model.Message;
  * @author kunrey
  * 
  */
-public class ArrearsMessagesItemProcessor implements ItemProcessor<Bill, Message>
+public class ArrearsMessagesItemProcessor implements
+		ItemProcessor<Bill, Message>
 {
 
 	public Message process(Bill item) throws Exception
@@ -21,7 +22,8 @@ public class ArrearsMessagesItemProcessor implements ItemProcessor<Bill, Message
 		{/* unpaid */
 			Message m = new Message();
 			m.setUser(item.getUser());
-			m.setContent("Hello " + item.getUser().getName() + ",please pay promptly at end of this month.");
+			m.setContent("Hello " + item.getUser().getName()
+					+ ",please pay promptly at end of this month.");
 			return m;
 		}
 		return null;

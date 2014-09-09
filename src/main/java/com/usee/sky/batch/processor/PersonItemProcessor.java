@@ -13,7 +13,8 @@ public class PersonItemProcessor implements ItemProcessor<Person, Person>
 
 		Person transformedPerson = new Person(firstName, lastName);
 
-		System.out.println("Converting (" + person + ") into (" + transformedPerson + ")");
+		System.out.println("Converting (" + person + ") into ("
+				+ transformedPerson + ")");
 
 		return transformedPerson;
 	}

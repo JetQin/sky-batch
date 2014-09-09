@@ -35,7 +35,10 @@ public class Customer implements Serializable
 
 	private String lastname;
 
-    public Customer(){}
+	public Customer()
+	{
+	}
+
 	/**
 	 * @param firstname
 	 * @param lastname
@@ -70,6 +73,6 @@ public class Customer implements Serializable
 	@Override
 	public String toString()
 	{
-		return String.format("[%s]:[%s]", firstname,lastname);
+		return String.format("[%s]:[%s]", firstname, lastname);
 	}
 }

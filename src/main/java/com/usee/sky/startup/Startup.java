@@ -23,33 +23,37 @@ public class Startup
 	public static void main(String[] args)
 	{
 
-		ApplicationContext context = new AnnotationConfigApplicationContext(BatchConfiguration.class);
+		ApplicationContext context = new AnnotationConfigApplicationContext(
+				BatchConfiguration.class);
 		SimpleJobLauncher launcher = context.getBean(SimpleJobLauncher.class);
 		try
 		{
 			launcher.run((Job) context.getBean("job1"), new JobParameters());
-//			launcher.run((Job) context.getBean("messageJob"), new JobParameters());
-		}
-		catch (Exception e)
+			// launcher.run((Job) context.getBean("messageJob"), new
+			// JobParameters());
+		} catch (Exception e)
 		{
 			e.printStackTrace();
 		}
-		
-//		SimpleJobLauncher  billlauncher = new SimpleJobLauncher();
-//		billlauncher.setJobRepository((JobRepository) context.getBean("mysqlJobRepository"));
-//		billlauncher.setTaskExecutor(new SyncTaskExecutor());
-//		try
-//		{
-//			Map<String, JobParameter> parameters = new HashMap<String, JobParameter>();
-//			parameters.put(RUN_MONTH_KEY, new JobParameter("2011-2"));
-//			JobExecution je = launcher.run((Job) context.getBean("billingJob"), new JobParameters(parameters));
-//			System.out.println(je);
-//			System.out.println(je.getJobInstance());
-//			System.out.println(je.getStepExecutions());
-//		}
-//		catch (Exception e)
-//		{
-//			e.printStackTrace();
-//		}
+
+		// SimpleJobLauncher billlauncher = new SimpleJobLauncher();
+		// billlauncher.setJobRepository((JobRepository)
+		// context.getBean("mysqlJobRepository"));
+		// billlauncher.setTaskExecutor(new SyncTaskExecutor());
+		// try
+		// {
+		// Map<String, JobParameter> parameters = new HashMap<String,
+		// JobParameter>();
+		// parameters.put(RUN_MONTH_KEY, new JobParameter("2011-2"));
+		// JobExecution je = launcher.run((Job) context.getBean("billingJob"),
+		// new JobParameters(parameters));
+		// System.out.println(je);
+		// System.out.println(je.getJobInstance());
+		// System.out.println(je.getStepExecutions());
+		// }
+		// catch (Exception e)
+		// {
+		// e.printStackTrace();
+		// }
 	}
 }

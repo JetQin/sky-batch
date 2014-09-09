@@ -51,7 +51,8 @@ public abstract class AbstractDataService<T extends Serializable>
 
 	public List<T> findAll()
 	{
-		return getCurrentSession().createQuery("from " + clazz.getName()).list();
+		return getCurrentSession().createQuery("from " + clazz.getName())
+				.list();
 	}
 
 	public void save(final T entity)

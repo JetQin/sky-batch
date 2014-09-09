@@ -38,9 +38,13 @@ import org.springframework.transaction.jta.JtaTransactionManager;
 @Configuration
 @EnableTransactionManagement
 @PropertySource(
-{ "classpath:batch.properties" })
+{
+	"classpath:batch.properties"
+})
 @ComponentScan(
-{ "com.usee.sky.dataservice" })
+{
+	"com.usee.sky.dataservice"
+})
 public class ServiceConfiguration
 {
 
@@ -53,7 +57,9 @@ public class ServiceConfiguration
 		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
 		sessionFactory.setDataSource(restDataSource());
 		sessionFactory.setPackagesToScan(new String[]
-		{ "com.usee.sky.model" });
+		{
+			"com.usee.sky.model"
+		});
 		sessionFactory.setHibernateProperties(hibernateProperties());
 		return sessionFactory;
 	}
@@ -62,31 +68,36 @@ public class ServiceConfiguration
 	public BasicDataSource restDataSource()
 	{
 		BasicDataSource dataSource = new BasicDataSource();
-		dataSource.setDriverClassName(env.getProperty("batch.jdbc.driverClassName"));
+		dataSource.setDriverClassName(env
+				.getProperty("batch.jdbc.driverClassName"));
 		dataSource.setUrl(env.getProperty("batch.jdbc.url"));
 		dataSource.setUsername(env.getProperty("batch.jdbc.user"));
 		dataSource.setPassword(env.getProperty("batch.jdbc.password"));
 		return dataSource;
 	}
-	
-//	@Bean(name="datasourceTransactionManager")
-//	public DataSourceTransactionManager transactionManager(SessionFactory sessionFactory)
-//	{
-//		DataSourceTransactionManager txManager = new DataSourceTransactionManager();
-//		txManager.setDataSource(restDataSource());
-//		return txManager;
-//	}
-	
-//	@Bean
-//	public PlatformTransactionManager transactionManager(SessionFactory sessionFactory)
-//	{
-//		PlatformTransactionManager txManager = new JtaTransactionManager();
-//		return txManager;
-//	}
+
+	// @Bean(name="datasourceTransactionManager")
+	// public DataSourceTransactionManager transactionManager(SessionFactory
+	// sessionFactory)
+	// {
+	// DataSourceTransactionManager txManager = new
+	// DataSourceTransactionManager();
+	// txManager.setDataSource(restDataSource());
+	// return txManager;
+	// }
+
+	// @Bean
+	// public PlatformTransactionManager transactionManager(SessionFactory
+	// sessionFactory)
+	// {
+	// PlatformTransactionManager txManager = new JtaTransactionManager();
+	// return txManager;
+	// }
 
 	@Bean
 	@Autowired
-	public HibernateTransactionManager transactionManager(SessionFactory sessionFactory)
+	public HibernateTransactionManager transactionManager(
+			SessionFactory sessionFactory)
 	{
 		HibernateTransactionManager txManager = new HibernateTransactionManager();
 		txManager.setSessionFactory(sessionFactory);
@@ -105,19 +116,30 @@ public class ServiceConfiguration
 		return new Properties()
 		{
 			{
-				setProperty("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
-				setProperty("hibernate.dialect", env.getProperty("hibernate.dialect"));
-				setProperty("hibernate.show_sql", env.getProperty("hibernate.show_sql"));
-				setProperty("hibernate.query.substitutions", env.getProperty("hibernate.query.substitutions"));
-				setProperty("hibernate.dialect", env.getProperty("hibernate.dialect"));
-//				setProperty("hibernate.current_session_context_class", env.getProperty("hibernate.current_session_context_class"));
+				setProperty("hibernate.hbm2ddl.auto",
+						env.getProperty("hibernate.hbm2ddl.auto"));
+				setProperty("hibernate.dialect",
+						env.getProperty("hibernate.dialect"));
+				setProperty("hibernate.show_sql",
+						env.getProperty("hibernate.show_sql"));
+				setProperty("hibernate.query.substitutions",
+						env.getProperty("hibernate.query.substitutions"));
+				setProperty("hibernate.dialect",
+						env.getProperty("hibernate.dialect"));
+				// setProperty("hibernate.current_session_context_class",
+				// env.getProperty("hibernate.current_session_context_class"));
 				setProperty("hibernate.globally_quoted_identifiers", "true");
 
-				setProperty("hibernate.c3p0.minPoolSize", env.getProperty("hibernate.c3p0.minPoolSize"));
-				setProperty("hibernate.c3p0.maxPoolSize", env.getProperty("hibernate.c3p0.maxPoolSize"));
-				setProperty("hibernate.c3p0.timeout", env.getProperty("hibernate.c3p0.timeout"));
-				setProperty("hibernate.c3p0.max_statement", env.getProperty("hibernate.c3p0.max_statement"));
-				setProperty("hibernate.c3p0.testConnectionOnCheckout",
+				setProperty("hibernate.c3p0.minPoolSize",
+						env.getProperty("hibernate.c3p0.minPoolSize"));
+				setProperty("hibernate.c3p0.maxPoolSize",
+						env.getProperty("hibernate.c3p0.maxPoolSize"));
+				setProperty("hibernate.c3p0.timeout",
+						env.getProperty("hibernate.c3p0.timeout"));
+				setProperty("hibernate.c3p0.max_statement",
+						env.getProperty("hibernate.c3p0.max_statement"));
+				setProperty(
+						"hibernate.c3p0.testConnectionOnCheckout",
 						env.getProperty("hibernate.c3p0.testConnectionOnCheckout"));
 
 			}

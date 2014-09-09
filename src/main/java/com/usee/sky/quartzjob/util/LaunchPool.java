@@ -14,7 +14,8 @@ import com.usee.sky.batch.configuration.BatchConfiguration;
 public class LaunchPool
 {
 
-	private static final ApplicationContext context = new AnnotationConfigApplicationContext(BatchConfiguration.class);
+	private static final ApplicationContext context = new AnnotationConfigApplicationContext(
+			BatchConfiguration.class);
 
 	private static final Log LOG = LogFactory.getLog(LaunchPool.class);
 
@@ -39,8 +40,7 @@ public class LaunchPool
 		try
 		{
 			getLaunchInstance().run(job, parameter);
-		}
-		catch (Exception e)
+		} catch (Exception e)
 		{
 			LOG.error(e.getMessage());
 		}

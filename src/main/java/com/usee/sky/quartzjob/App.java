@@ -28,14 +28,16 @@ public class App
 			Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
 
 			// JobDetail
-			JobDetail jobDetail = JobBuilder.newJob(SampleJob.class).withIdentity("newJob123125", "group3").build();
+			JobDetail jobDetail = JobBuilder.newJob(SampleJob.class)
+					.withIdentity("newJob123125", "group3").build();
 
 			// schedule start time
 			Date runTime = DateBuilder.evenMinuteDate(new Date());
 
 			// trigger init
-			Trigger trigger = TriggerBuilder.newTrigger().withIdentity("newSimpleTrigger5", "group3").startAt(runTime)
-					.build();
+			Trigger trigger = TriggerBuilder.newTrigger()
+					.withIdentity("newSimpleTrigger5", "group3")
+					.startAt(runTime).build();
 
 			scheduler.scheduleJob(jobDetail, trigger);
 
@@ -46,12 +48,10 @@ public class App
 
 			scheduler.shutdown();
 
-		}
-		catch (InterruptedException ex)
+		} catch (InterruptedException ex)
 		{
 			ex.printStackTrace();
-		}
-		catch (SchedulerException se)
+		} catch (SchedulerException se)
 		{
 			se.printStackTrace();
 		}

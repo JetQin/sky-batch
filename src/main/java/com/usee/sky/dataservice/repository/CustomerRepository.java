@@ -26,5 +26,5 @@ import com.usee.sky.model.Customer;
 @Transactional(readOnly = true)
 public interface CustomerRepository extends JpaRepository<Customer, Long>
 {
-	 Page<Customer> findByLastname(String lastname, Pageable pageable); 
+	Page<Customer> findByLastname(String lastname, Pageable pageable);
 }

@@ -36,7 +36,7 @@ class AccountService
 
 	@PersistenceContext
 	private EntityManager em;
-	
+
 	@Autowired
 	private AccountRepository repository;
 
@@ -44,25 +44,27 @@ class AccountService
 	public Account save(Account account)
 	{
 
-//		if (account.getId() == null)
-//		{
-//			em.persist(account);
-//			return account;
-//		}
-//		else
-//		{
-//			return em.merge(account);
-//		}
+		// if (account.getId() == null)
+		// {
+		// em.persist(account);
+		// return account;
+		// }
+		// else
+		// {
+		// return em.merge(account);
+		// }
 		return repository.save(account);
 	}
 
 	public List<Account> findByCustomer(Customer customer)
 	{
 
-//		TypedQuery query = em.createQuery("select a from Account a where a.customer = ?1", Account.class);
-//		query.setParameter(1, customer);
-//
-//		return query.getResultList();
+		// TypedQuery query =
+		// em.createQuery("select a from Account a where a.customer = ?1",
+		// Account.class);
+		// query.setParameter(1, customer);
+		//
+		// return query.getResultList();
 		return repository.findByCustomer(customer);
 	}
 }

@@ -12,7 +12,9 @@ public class ExampleItemReader implements ItemReader<String>
 {
 
 	private String[] input =
-	{ "Hello world!", null };
+	{
+			"Hello world!", null
+	};
 
 	private int index = 0;
 
@@ -24,8 +26,7 @@ public class ExampleItemReader implements ItemReader<String>
 		if (index < input.length)
 		{
 			return input[index++];
-		}
-		else
+		} else
 		{
 			return null;
 		}

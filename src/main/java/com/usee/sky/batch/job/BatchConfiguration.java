@@ -42,119 +42,135 @@ import com.usee.sky.model.Person;
 @Configuration
 @PropertySource("classpath:jdbc.properties")
 @EnableBatchProcessing
-public class BatchConfiguration {
+public class BatchConfiguration
+{
 
-    // tag::readerwriterprocessor[]
-	
+	// tag::readerwriterprocessor[]
+
 	@Autowired
 	Environment env;
-	
+
 	@Bean
 	public JobRepository repository()
 	{
-		JobRepository repository = new SimpleJobRepository(new MapJobInstanceDao(),new MapJobExecutionDao(),new MapStepExecutionDao(),new MapExecutionContextDao());
+		JobRepository repository = new SimpleJobRepository(
+				new MapJobInstanceDao(), new MapJobExecutionDao(),
+				new MapStepExecutionDao(), new MapExecutionContextDao());
 		return repository;
 	}
-	
+
 	@Bean
 	public JobBuilderFactory jobs()
 	{
-		JobBuilderFactory factory =  new JobBuilderFactory(repository());
+		JobBuilderFactory factory = new JobBuilderFactory(repository());
 		return factory;
 	}
-	
-	
+
 	@Bean
 	public StepBuilderFactory stepBuilderFactory()
 	{
-		StepBuilderFactory stepBuilderFactory = new StepBuilderFactory(repository(),transactionManager());
+		StepBuilderFactory stepBuilderFactory = new StepBuilderFactory(
+				repository(), transactionManager());
 		return stepBuilderFactory;
 	}
-	
+
 	@Bean
 	public SimpleJobLauncher launcher()
 	{
-		SimpleJobLauncher  launcher = new SimpleJobLauncher();
+		SimpleJobLauncher launcher = new SimpleJobLauncher();
 		launcher.setJobRepository(repository());
 		return launcher;
 	}
-	
-	
+
 	@Bean(name = "batchDataSource")
 	public BasicDataSource batchDataSource()
 	{
 		BasicDataSource dataSource = new BasicDataSource();
-		dataSource.setDriverClassName(env.getProperty("batch.jdbc.driverClassName"));
+		dataSource.setDriverClassName(env
+				.getProperty("batch.jdbc.driverClassName"));
 		dataSource.setUrl(env.getProperty("batch.jdbc.url"));
 		dataSource.setUsername(env.getProperty("batch.jdbc.user"));
 		dataSource.setPassword(env.getProperty("batch.jdbc.password"));
 		return dataSource;
 	}
-	
-		@Bean
-		public PlatformTransactionManager transactionManager()
+
+	@Bean
+	public PlatformTransactionManager transactionManager()
+	{
+		return new DataSourceTransactionManager(batchDataSource());
+	}
+
+	@Bean
+	public ItemReader<Person> reader()
+	{
+		System.out.println("*****Item Reader*****");
+		FlatFileItemReader<Person> reader = new FlatFileItemReader<Person>();
+		reader.setResource(new ClassPathResource("sample-data.csv"));
+		reader.setLineMapper(new DefaultLineMapper<Person>()
 		{
-			return new DataSourceTransactionManager(batchDataSource());
-		}
-	
-    @Bean
-    public ItemReader<Person> reader() {
-    	System.out.println("*****Item Reader*****");
-        FlatFileItemReader<Person> reader = new FlatFileItemReader<Person>();
-        reader.setResource(new ClassPathResource("sample-data.csv"));
-        reader.setLineMapper(new DefaultLineMapper<Person>() {{
-            setLineTokenizer(new DelimitedLineTokenizer() {{
-                setNames(new String[] { "firstName", "lastName" });
-            }});
-            setFieldSetMapper(new BeanWrapperFieldSetMapper<Person>() {{
-                setTargetType(Person.class);
-            }});
-        }});
-        return reader;
-    }
+			{
+				setLineTokenizer(new DelimitedLineTokenizer()
+				{
+					{
+						setNames(new String[]
+						{
+								"firstName", "lastName"
+						});
+					}
+				});
+				setFieldSetMapper(new BeanWrapperFieldSetMapper<Person>()
+				{
+					{
+						setTargetType(Person.class);
+					}
+				});
+			}
+		});
+		return reader;
+	}
 
-    @Bean
-    public ItemProcessor<Person, Person> processor() {
-    	System.out.println("*****Item Processor*****");
-        return new PersonItemProcessor();
-    }
+	@Bean
+	public ItemProcessor<Person, Person> processor()
+	{
+		System.out.println("*****Item Processor*****");
+		return new PersonItemProcessor();
+	}
 
-    @Bean
-    public ItemWriter<Person> writer(DataSource dataSource) {
-    	System.out.println("*****Item Writer*****");
-        JdbcBatchItemWriter<Person> writer = new JdbcBatchItemWriter<Person>();
-        writer.setItemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<Person>());
-        writer.setSql("INSERT INTO people (first_name, last_name) VALUES (:firstName, :lastName)");
-        writer.setDataSource(dataSource);
-        return writer;
-    }
-    // end::readerwriterprocessor[]
+	@Bean
+	public ItemWriter<Person> writer(DataSource dataSource)
+	{
+		System.out.println("*****Item Writer*****");
+		JdbcBatchItemWriter<Person> writer = new JdbcBatchItemWriter<Person>();
+		writer.setItemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<Person>());
+		writer.setSql("INSERT INTO people (first_name, last_name) VALUES (:firstName, :lastName)");
+		writer.setDataSource(dataSource);
+		return writer;
+	}
 
-    // tag::jobstep[]
-    @Bean
-    public Job importUserJob(Step s1) {
-        return jobs().get("importUserJob")
-                .incrementer(new RunIdIncrementer())
-                .flow(s1)
-                .end()
-                .build();
-    }
+	// end::readerwriterprocessor[]
 
-    @Bean
-    public Step step1(ItemReader<Person> reader,
-            ItemWriter<Person> writer, ItemProcessor<Person, Person> processor) {
-        return stepBuilderFactory().get("step1")
-                .<Person, Person> chunk(10)
-                .reader(reader)
-                .processor(processor)
-                .writer(writer)
-                .build();
-    }
-    // end::jobstep[]
+	// tag::jobstep[]
+	@Bean
+	public Job importUserJob(Step s1)
+	{
+		return jobs().get("importUserJob").incrementer(new RunIdIncrementer())
+				.flow(s1).end().build();
+	}
 
-    @Bean
-    public JdbcTemplate jdbcTemplate() {
-        return new JdbcTemplate(batchDataSource());
-    }
+	@Bean
+	public Step step1(ItemReader<Person> reader, ItemWriter<Person> writer,
+			ItemProcessor<Person, Person> processor)
+	{
+		return stepBuilderFactory().get("step1").<Person, Person> chunk(10)
+				.reader(reader).processor(processor).writer(writer).build();
+	}
+
+	// end::jobstep[]
+
+	@Bean
+	public JdbcTemplate jdbcTemplate()
+	{
+		return new JdbcTemplate(batchDataSource());
+	}
 
 }

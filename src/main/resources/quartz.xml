@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- 要调用的工作类 -->
+	<bean id="runMeJob" class="com.usee.sky.quartzjob.job.RunMeTask"></bean>
+
+
+<!-- 	<bean name="jobDetail" class="org.springframework.scheduling.quartz.JobDetailBean"> -->
+<!-- 	    <property name="jobClass" ref="runMeJob" /> -->
+<!-- 	    <property name="jobDataAsMap"> -->
+<!-- 	        <map> -->
+<!-- 	            <entry key="timeout" value="5" /> -->
+<!-- 	        </map> -->
+<!-- 	    </property> -->
+<!-- 	</bean> -->
+
+	<!-- 定义调用对象和调用对象的方法 -->
+	<bean id="jobDetail"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="runMeJob" />
+		<property name="targetMethod" value="print" />
+		<property name="concurrent" value="false" />
+	</bean>
+
+	<bean id="cronTrigger"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="jobDetail" />
+		<!-- run every morning at 6 AM -->
+		<property name="cronExpression" value="0/5 * * * * ?" />
+	</bean>
+
+	<!-- 总管理类 如果将lazy-init='false'那么容器启动就会执行调度程序 -->
+	<bean id="startQuertz"
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="cronTrigger" />
+			</list>
+		</property>
+	</bean>
+</beans>

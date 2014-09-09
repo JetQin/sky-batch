@@ -18,7 +18,10 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
 // @EnableBatchProcessing
-@ImportResource({"classpath:sky-context.xml","classpath:billing_job.xml"})
+@ImportResource(
+{
+		"classpath:sky-context.xml", "classpath:billing_job.xml"
+})
 public class BatchConfiguration
 {
 

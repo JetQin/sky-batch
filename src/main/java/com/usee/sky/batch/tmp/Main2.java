@@ -29,7 +29,8 @@ public class Main2
 	 */
 	public static void main(String[] args)
 	{
-		ClassPathXmlApplicationContext c = new ClassPathXmlApplicationContext("billing_job.xml");
+		ClassPathXmlApplicationContext c = new ClassPathXmlApplicationContext(
+				"billing_job.xml");
 		SimpleJobLauncher launcher = new SimpleJobLauncher();
 		launcher.setJobRepository((JobRepository) c.getBean("jobRepository"));
 		launcher.setTaskExecutor(new SyncTaskExecutor());
@@ -37,12 +38,12 @@ public class Main2
 		{
 			Map<String, JobParameter> parameters = new HashMap<String, JobParameter>();
 			parameters.put(RUN_MONTH_KEY, new JobParameter("2011-2"));
-			JobExecution je = launcher.run((Job) c.getBean("billingJob"), new JobParameters(parameters));
+			JobExecution je = launcher.run((Job) c.getBean("billingJob"),
+					new JobParameters(parameters));
 			System.out.println(je);
 			System.out.println(je.getJobInstance());
 			System.out.println(je.getStepExecutions());
-		}
-		catch (Exception e)
+		} catch (Exception e)
 		{
 			e.printStackTrace();
 		}

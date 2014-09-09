@@ -17,7 +17,8 @@ public class QuartzConfiguration
 
 	private static final Log LOG = LogFactory.getLog(QuartzConfiguration.class);
 
-	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+	private static final SimpleDateFormat dateFormat = new SimpleDateFormat(
+			"yyyy-mm-dd hh:mm:ss");
 
 	// @Scheduled(cron = "0/5 * * * * *")
 	public void scheduleJob()

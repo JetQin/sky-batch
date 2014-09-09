@@ -31,14 +31,14 @@ public class PaymentItemProcessor implements ItemProcessor<Bill, PayRecord>
 			pr.setBill(item);
 			pr.setPaidFees(item.getUnpaidFees());
 			// update balance
-			item.getUser().setBalance(item.getUser().getBalance() - item.getUnpaidFees());
+			item.getUser().setBalance(
+					item.getUser().getBalance() - item.getUnpaidFees());
 			// update bill
 			item.setPaidFees(item.getUnpaidFees());
 			item.setUnpaidFees(0.0);
 			item.setPayStatus(1);/* paid */
 			return pr;
-		}
-		else
+		} else
 		{
 			throw new MoneyNotEnoughException();
 		}

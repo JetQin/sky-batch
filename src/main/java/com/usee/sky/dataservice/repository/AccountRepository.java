@@ -24,10 +24,10 @@ import com.usee.sky.model.Customer;
  * @author jet
  *
  */
-@Transactional(readOnly = true) 
+@Transactional(readOnly = true)
 public interface AccountRepository extends JpaRepository<Account, Long>
 {
 
-	 List<Account> findByCustomer(Customer customer); 
-	 
+	List<Account> findByCustomer(Customer customer);
+
 }

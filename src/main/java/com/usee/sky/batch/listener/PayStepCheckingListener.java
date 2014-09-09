@@ -18,11 +18,11 @@ public class PayStepCheckingListener extends StepExecutionListenerSupport
 	public ExitStatus afterStep(StepExecution stepExecution)
 	{
 		String exitCode = stepExecution.getExitStatus().getExitCode();
-		if (!exitCode.equals(ExitStatus.FAILED.getExitCode()) && stepExecution.getSkipCount() > 0)
+		if (!exitCode.equals(ExitStatus.FAILED.getExitCode())
+				&& stepExecution.getSkipCount() > 0)
 		{
 			return new ExitStatus("COMPLETED WITH SKIPS");
-		}
-		else
+		} else
 		{
 			return null;
 		}

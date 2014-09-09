@@ -19,7 +19,7 @@ import com.usee.sky.model.Customer;
 public class Application
 {
 
-	@Scheduled(cron = "0/5 * * * * *",fixedDelay=2000)
+	@Scheduled(cron = "0/5 * * * * *", fixedDelay = 2000)
 	public static void findCustomer(UserService service, long id)
 	{
 		System.out.println("Customer found with findOne(1L):");
@@ -31,7 +31,8 @@ public class Application
 	public static void main(String[] args)
 	{
 
-		ApplicationContext context = new AnnotationConfigApplicationContext(Application.class);
+		ApplicationContext context = new AnnotationConfigApplicationContext(
+				Application.class);
 		UserService repository = context.getBean(UserService.class);
 
 		PageRequest page = new PageRequest(5, 10);

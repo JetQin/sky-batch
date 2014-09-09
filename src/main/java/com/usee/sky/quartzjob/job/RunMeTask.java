@@ -22,6 +22,6 @@ public class RunMeTask
 {
 	public void print()
 	{
-		System.out.println("[Date]="+new Date());
+		System.out.println("[Date]=" + new Date());
 	}
 }
