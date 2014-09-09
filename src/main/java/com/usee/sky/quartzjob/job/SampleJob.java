@@ -13,7 +13,7 @@ import static org.quartz.JobBuilder.*;
 @Component
 public class SampleJob extends AbstractJob implements Job
 {
-
+    
 	public void execute(JobExecutionContext context)
 			throws JobExecutionException
 	{
