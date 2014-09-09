@@ -15,6 +15,8 @@ package com.usee.sky.dataservice.conf;
 import java.util.Properties;
 
 import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -26,6 +28,9 @@ import org.springframework.dao.annotation.PersistenceExceptionTranslationPostPro
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,16 +43,13 @@ import org.springframework.transaction.jta.JtaTransactionManager;
 @Configuration
 @EnableTransactionManagement
 @PropertySource(
-{
-	"classpath:batch.properties"
-})
+{ "classpath:batch.properties" })
 @ComponentScan(
-{
-	"com.usee.sky.dataservice"
-})
+{ "com.usee.sky.dataservice.service"})
 public class ServiceConfiguration
 {
-
+	private static final Log logger = LogFactory.getLog(ServiceConfiguration.class);
+	
 	@Autowired
 	private Environment env;
 
@@ -57,9 +59,7 @@ public class ServiceConfiguration
 		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
 		sessionFactory.setDataSource(restDataSource());
 		sessionFactory.setPackagesToScan(new String[]
-		{
-			"com.usee.sky.model"
-		});
+		{ "com.usee.sky.model" });
 		sessionFactory.setHibernateProperties(hibernateProperties());
 		return sessionFactory;
 	}
@@ -68,39 +68,58 @@ public class ServiceConfiguration
 	public BasicDataSource restDataSource()
 	{
 		BasicDataSource dataSource = new BasicDataSource();
-		dataSource.setDriverClassName(env
-				.getProperty("batch.jdbc.driverClassName"));
+		dataSource.setDriverClassName(env.getProperty("batch.jdbc.driverClassName"));
 		dataSource.setUrl(env.getProperty("batch.jdbc.url"));
 		dataSource.setUsername(env.getProperty("batch.jdbc.user"));
 		dataSource.setPassword(env.getProperty("batch.jdbc.password"));
 		return dataSource;
 	}
 
-	// @Bean(name="datasourceTransactionManager")
-	// public DataSourceTransactionManager transactionManager(SessionFactory
-	// sessionFactory)
-	// {
-	// DataSourceTransactionManager txManager = new
-	// DataSourceTransactionManager();
-	// txManager.setDataSource(restDataSource());
-	// return txManager;
-	// }
 
-	// @Bean
-	// public PlatformTransactionManager transactionManager(SessionFactory
-	// sessionFactory)
-	// {
-	// PlatformTransactionManager txManager = new JtaTransactionManager();
-	// return txManager;
-	// }
+//	@Bean(name = "dwEntityManager")
+//	public LocalContainerEntityManagerFactoryBean dwEntityManagerFactory()
+//	{
+//		try
+//		{
+//			LocalContainerEntityManagerFactoryBean localContainerEntityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
+//			localContainerEntityManagerFactoryBean.setDataSource(restDataSource());
+//			localContainerEntityManagerFactoryBean.setPackagesToScan("com.usee.sky.model");
+//			localContainerEntityManagerFactoryBean.setPersistenceUnitName("dw");
+//			HibernateJpaVendorAdapter jpaVendorAdapter = new HibernateJpaVendorAdapter();
+//
+//			jpaVendorAdapter.setGenerateDdl(false);
+//			jpaVendorAdapter.setShowSql(true);
+//			jpaVendorAdapter.setDatabasePlatform(env.getProperty("dataSource.dialect"));
+//			localContainerEntityManagerFactoryBean.setJpaVendorAdapter(jpaVendorAdapter);
+//			return localContainerEntityManagerFactoryBean;
+//
+//		}
+//		catch (Exception e)
+//		{
+//			logger.error("JpaConfigurationImpl.entityManagerFactory(): " + e.getMessage());
+//		}
+//		return new LocalContainerEntityManagerFactoryBean();
+//	}
+//
+//	@Bean(name = "dwTransactionManager")
+//	public PlatformTransactionManager dwTransactionManager(javax.persistence.EntityManagerFactory dwEntityManager)
+//	{
+//		try
+//		{
+//			return new JpaTransactionManager(dwEntityManager);
+//		}
+//		catch (Exception e)
+//		{
+//			logger.error("JpaConfigurationImpl.transactionManager(): " + e.getMessage());
+//		}
+//		return new JpaTransactionManager();
+//	}
 
 	@Bean
-	@Autowired
-	public HibernateTransactionManager transactionManager(
-			SessionFactory sessionFactory)
+	public HibernateTransactionManager transactionManager()
 	{
 		HibernateTransactionManager txManager = new HibernateTransactionManager();
-		txManager.setSessionFactory(sessionFactory);
+		txManager.setSessionFactory(sessionFactory().getObject());
 		txManager.setDataSource(restDataSource());
 		return txManager;
 	}
@@ -116,30 +135,20 @@ public class ServiceConfiguration
 		return new Properties()
 		{
 			{
-				setProperty("hibernate.hbm2ddl.auto",
-						env.getProperty("hibernate.hbm2ddl.auto"));
-				setProperty("hibernate.dialect",
-						env.getProperty("hibernate.dialect"));
-				setProperty("hibernate.show_sql",
-						env.getProperty("hibernate.show_sql"));
-				setProperty("hibernate.query.substitutions",
-						env.getProperty("hibernate.query.substitutions"));
-				setProperty("hibernate.dialect",
-						env.getProperty("hibernate.dialect"));
+				setProperty("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
+				setProperty("hibernate.dialect", env.getProperty("hibernate.dialect"));
+				setProperty("hibernate.show_sql", env.getProperty("hibernate.show_sql"));
+				setProperty("hibernate.query.substitutions", env.getProperty("hibernate.query.substitutions"));
+				setProperty("hibernate.dialect", env.getProperty("hibernate.dialect"));
 				// setProperty("hibernate.current_session_context_class",
 				// env.getProperty("hibernate.current_session_context_class"));
 				setProperty("hibernate.globally_quoted_identifiers", "true");
 
-				setProperty("hibernate.c3p0.minPoolSize",
-						env.getProperty("hibernate.c3p0.minPoolSize"));
-				setProperty("hibernate.c3p0.maxPoolSize",
-						env.getProperty("hibernate.c3p0.maxPoolSize"));
-				setProperty("hibernate.c3p0.timeout",
-						env.getProperty("hibernate.c3p0.timeout"));
-				setProperty("hibernate.c3p0.max_statement",
-						env.getProperty("hibernate.c3p0.max_statement"));
-				setProperty(
-						"hibernate.c3p0.testConnectionOnCheckout",
+				setProperty("hibernate.c3p0.minPoolSize", env.getProperty("hibernate.c3p0.minPoolSize"));
+				setProperty("hibernate.c3p0.maxPoolSize", env.getProperty("hibernate.c3p0.maxPoolSize"));
+				setProperty("hibernate.c3p0.timeout", env.getProperty("hibernate.c3p0.timeout"));
+				setProperty("hibernate.c3p0.max_statement", env.getProperty("hibernate.c3p0.max_statement"));
+				setProperty("hibernate.c3p0.testConnectionOnCheckout",
 						env.getProperty("hibernate.c3p0.testConnectionOnCheckout"));
 
 			}

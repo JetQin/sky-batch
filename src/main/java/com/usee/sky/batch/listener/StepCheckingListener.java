@@ -11,7 +11,7 @@ import org.springframework.batch.core.listener.StepExecutionListenerSupport;
  * @author kunrey
  * 
  */
-public class PayStepCheckingListener extends StepExecutionListenerSupport
+public class StepCheckingListener extends StepExecutionListenerSupport
 {
 
 	@Override
