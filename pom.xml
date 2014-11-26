@@ -11,7 +11,8 @@
 	<url>http://www.springframework.org/spring-batch/archetypes/simple-cli-archetype</url>
 	<description>
 		<![CDATA[
-      This project is a minimal command line batch sample from Spring Batch.  
+      This project is a minimal command line batch sample from Spring Batch.
+			for test
     ]]>
 	</description>
 
